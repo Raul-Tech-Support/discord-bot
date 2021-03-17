@@ -1,16 +1,17 @@
 const { Message, Client } = require('discord.js');
+const Discord = require("discord.js")
 var { logChannelID } = require('../config.json');
-const embed = require("../embed.js");
+const em = require("../embed.js");
 
 module.exports = {
 	name: 'ban',
-	description: 'Ban a user for a specified reason.',
+	description: 'Send a DM to a user from the bot.',
 	usage: '<@user> <reason>',
 	permissions: 'BAN_MEMBERS',
-	cooldown: 5,
+	cooldown: '5',
 	args: true,
 	guildOnly: true,
-	execute(message, args, client) {
+	async execute(message, args, client) {
 		let User = message.guild.member(message.mentions.members.first()) || message.guild.members.cache.get(args[0])
 		let User1 = '<@' + message.mentions.members.first() + '>';
 		if (!User) {
@@ -38,11 +39,22 @@ module.exports = {
 			msg.delete({ timeout: 10000});
 		})
 
+        const embed = new Discord.MessageEmbed()
+        .setTitle(`You were banned from ${message.guild.name}`)
+        .addField("Reason: ", `${banReason}`)
+
+        await User.send(embed).catch(() => {console.log("Failed to send ban embed")})
+		
 		desc1 = '**Offender:** ' +  User1 + '\n**Reason:** ' + banReason + '\n**Moderator:** ' + mod;
 
-        User.ban({reason: banReason})
+		await message.guild.members.ban(User, {reason: banReason})
+		.catch(error => message.reply(`I couldn't ban ${User.username} because of \`${error}\``)
+		.then(msg => {
+			msg.delete({ timeout: 30000})
+			return;
+		}))
 
-		client.channels.cache.get(logChannelID).send(embed.embed(message.guild.name, 'User Banned', 'RED', desc1))
+		client.channels.cache.get(logChannelID).send(em.embed(message.guild.name, 'User Banned', 'RED', desc1))
 	},
 };
 
