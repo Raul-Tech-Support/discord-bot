@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const { version } = require('./config.json');
 
 module.exports = {
     embed: (guildName, action, colour, desc1) => {
@@ -7,7 +8,7 @@ module.exports = {
         .setColor(colour)
         .setTitle(guildName + ' - ' + action)
         .setDescription(desc1)
-        .setFooter('Raul Bot | Version 1.0 | Developed by >> A Random Stranger <<#8514');
+        .setFooter(`Raul Bot | Version ${version} | Developed by >> A Random Stranger <<#8514`);
 
     return(Embed);
     }
