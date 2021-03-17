@@ -1,6 +1,6 @@
 const { Message, Client } = require('discord.js');
 const Discord = require("discord.js")
-var { logChannelID } = require('../config.json');
+var { logChannelID, version } = require('../config.json');
 const em = require("../embed.js");
 
 module.exports = {
@@ -42,8 +42,10 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
         .setTitle(`You were banned from ${message.guild.name}`)
         .addField("Reason: ", `${banReason}`)
+	.setFooter(`Raul Bot | Version ${version} | Developed by >> A Random Stranger <<#8514`);
 
-        await User.send(embed).catch(() => {console.log("Failed to send ban embed")})
+
+        await User.send(embed).catch(() => {message.reply("Failed to send user a ban DM. They likely have server DM's disabled.").then(msg => {msg.delete({ timeout: 10000})})})
 		
 		desc1 = '**Offender:** ' +  User1 + '\n**Reason:** ' + banReason + '\n**Moderator:** ' + mod;
 
